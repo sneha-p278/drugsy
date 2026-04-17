@@ -1,0 +1,1 @@
+MONGO_URI = "mongodb+srv://vpsneha719_db_user:6L0jcqgCumoS8vyi@cluster0.ricvpp8.mongodb.net/medTrace?retryWrites=true&w=majority"
