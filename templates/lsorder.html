@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrace - Orders Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #1e88e5;
+            --white: #ffffff;
+            --light-blue: rgba(30, 136, 229, 0.08);
+            --hover-blue: rgba(30, 136, 229, 0.15);
+            --text-primary: #2c3e50;
+            --text-secondary: #607d8b;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: var(--white);
+            padding: 24px;
+            box-shadow: 0 0 20px rgba(30, 136, 229, 0.1);
+            border-right: 1px solid rgba(30, 136, 229, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 0 12px;
+        }
+
+        .logo img {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-blue);
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 8px 16px rgba(30, 136, 229, 0.25);
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: var(--primary-blue);
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border-radius: 14px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            gap: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: var(--primary-blue);
+            opacity: 0.1;
+            transition: width 0.3s ease;
+        }
+
+        .menu-item:hover:before {
+            width: 100%;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover i {
+            transform: scale(1.1);
+            color: var(--primary-blue);
+        }
+
+        .menu-item span {
+            flex: 1;
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+
+        .menu-item.active {
+            background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+        }
+
+        .menu-item.active i {
+            color: var(--white);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 35px;
+            max-width: 1600px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .title-section h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .order-id {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .status.processing {
+            background: #e3f2fd;
+            color: #0d6efd;
+        }
+
+        .status.shipped {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status.pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .order-info {
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+        .tracking-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .tracking-header {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .tracking-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #0d6efd;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -16px;
+            top: 12px;
+            width: 2px;
+            height: 100%;
+            background: #e0e0e0;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-item.completed::before {
+            background: #4caf50;
+        }
+
+        .timeline-item.pending::before {
+            background: #f57c00;
+        }
+
+        .timeline-content {
+            font-size: 13px;
+        }
+
+        .timeline-title {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .timeline-date {
+            color: #666;
+            font-size: 12px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #dee2e6;
+        }
+ 
+        
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/api/placeholder/40/40" alt="MedTrace Logo">
+            <div>
+                <div class="logo-text">MedTrace</div>
+                <div class="logo-subtitle">Distributor Portal</div>
+            </div>
+        </div>
+        
+        <div class="menu-item" onclick="window.location.href='{{ url_for('lsdashboard') }}';">
+            <i class="fas fa-chart-line"></i>
+            Dashboard
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('lsinventory') }}';">
+            <i class="fas fa-box" ></i>
+            Inventory
+        </div>
+        <div class="menu-item active" onclick="window.location.href='{{ url_for('lsorder') }}';">
+            <i class="fas fa-shopping-cart"></i>
+            Orders
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('lsprofile') }}';">
+            <i class="fas fa-user"></i>
+            Profile
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('lsnotification') }}';">
+            <i class="fas fa-bell"></i>
+            Notifications
+        </div>
+        
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="title-section">
+                <h1>Orders Management</h1>
+                <div class="subtitle">View and manage orders</div>
+            </div>
+            <button class="btn btn-primary" onclick="showNewOrderModal()">
+                <i class="fas fa-plus"></i>
+                New Order
+            </button>
+        </div>
+
+        <div class="orders-grid" id="ordersGrid">
+            <!-- Sample Order Card -->
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-id">ORD-2024-001</div>
+                    <div class="status pending">Pending</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Manufacturer</div>
+                    <div class="info-value">PharmaCo Ltd</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Product</div>
+                    <div class="info-value">Paracetamol 500mg</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Quantity</div>
+                    <div class="info-value">1000 units</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Delivery Date</div>
+                    <div class="info-value">March 20, 2024</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Order Modal -->
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">New Order</h2>
+            <form id="newOrderForm">
+                <div class="form-group">
+                    <label>Manufacturer</label>
+                    <select id="manufacturerSelect" required>
+                        <option value="">Select Manufacturer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Product</label>
+                    <input type="text" id="productInput" required>
+                </div>
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" id="quantityInput" required min="1">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Date</label>
+                    <input type="date" id="deliveryDateInput" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simulated database of manufacturers
+        const manufacturers = [
+            { id: 1, name: 'PharmaCo Ltd' },
+            { id: 2, name: 'MedSupply Inc' },
+            { id: 3, name: 'HealthCare Manufacturing' }
+        ];
+
+        // Initialize manufacturers dropdown
+        const manufacturerSelect = document.getElementById('manufacturerSelect');
+        manufacturers.forEach(manufacturer => {
+            const option = document.createElement('option');
+            option.value = manufacturer.id;
+            option.textContent = manufacturer.name;
+            manufacturerSelect.appendChild(option);
+        });
+
+        // Generate Order ID
+        function generateOrderId() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `ORD-${year}${month}-${random}`;
+        }
+
+        // Show/Hide Modal
+        function showNewOrderModal() {
+            document.getElementById('newOrderModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('newOrderModal').style.display = 'none';
+            document.getElementById('newOrderForm').reset();
+        }
+
+        // Create Order Card
+        function createOrderCard(orderData) {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+            card.innerHTML = `
+                <div class="order-header">
+                    <div class="order-id">${orderData.orderId}</div>
+                    <div class="status pending">Pending</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Manufacturer</div>
+                    <div class="info-value">${orderData.manufacturer}</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Product</div>
+                    <div class="info-value">${orderData.product}</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Quantity</div>
+                    <div class="info-value">${orderData.quantity} units</div>
+                </div>
+                <div class="order-info">
+                    <div class="info-label">Delivery Date</div>
+                    <div class="info-value">${orderData.deliveryDate}</div>
+                </div>
+            `;
+            return card;
+        }
+
+        // Handle Form Submission
+        document.getElementById('newOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const manufacturerId = manufacturerSelect.value;
+            const manufacturer = manufacturers.find(m => m.id == manufacturerId).name;
+            
+            const orderData = {
+                orderId: generateOrderId(),
+                manufacturer: manufacturer,
+                product: document.getElementById('productInput').value,
+                quantity: document.getElementById('quantityInput').value,
+                deliveryDate: document.getElementById('deliveryDateInput').value
+            };
+
+            const orderCard = createOrderCard(orderData);
+            document.getElementById('ordersGrid').prepend(orderCard);
+            
+            closeModal();
+        });
+
+        // Menu item click handlers
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

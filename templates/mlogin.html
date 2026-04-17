@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrace - Manufacturer Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            min-height: 90vh;
+            
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 3rem;
+            width: 50%;
+            position: relative;
+            box-shadow: 4px 0 25px rgba(30, 136, 229, 0.25);
+            animation: slideIn 1s ease-out;
+            overflow: hidden;
+        }
+
+        /* Animated background pattern */
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+                        linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+                        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%),
+                        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            animation: patternMove 20s linear infinite;
+            opacity: 0.1;
+        }
+
+        @keyframes patternMove {
+            0% { background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
+            100% { background-position: 50px 0, 50px 10px, 60px -10px, 40px 0px; }
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-icon {
+            font-size: 1.4rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .main-title {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #e3f2fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-size: 1.2rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .feature-icon {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-right: 1.25rem;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .login-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: #ffffff;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 10px 25px rgba(30, 136, 229, 0.1);
+        }
+
+        .portal-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #1e88e5;
+            font-size: 1.75rem;
+            margin-bottom: 1.25rem;
+            font-weight: 700;
+        }
+
+        .portal-subtitle {
+            color: #546e7a;
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: #37474f;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e3f2fd;
+            border-radius: 12px;
+            font-size: 1rem;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 4px rgba(30, 136, 229, 0.1);
+        }
+
+        .signin-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1e88e5 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(30, 136, 229, 0.2);
+        }
+
+        .signin-button:hover {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(30, 136, 229, 0.3);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .forgot-password a {
+            color: #1e88e5;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+
+        .social-signin {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e3f2fd;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #37474f;
+        }
+
+        .social-button:hover {
+            background: #f5f9ff;
+            border-color: #1e88e5;
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 2rem 0;
+            color: #78909c;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e3f2fd;
+        }
+
+        .error-message {
+            color: #e53935;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+            padding-left: 0.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 40%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                padding: 2rem;
+            }
+            .login-box {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">◊</span>
+                <span>MedTrace</span>
+            </div>
+            
+            <h1 class="main-title">Welcome to the Future of Pharmaceutical Supply Chain</h1>
+            <p class="subtitle">Secure, transparent, and efficient tracking system powered by blockchain technology.</p>
+            
+            <div class="feature">
+                <span class="feature-icon">🔒</span>
+                <div>
+                    <h3 class="feature-title">Enhanced Security</h3>
+                    <p class="feature-description">Military-grade encryption and blockchain verification</p>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">📊</span>
+                <div>
+                    <h3 class="feature-title">Real-time Analytics</h3>
+                    <p class="feature-description">Advanced insights and tracking capabilities</p>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">🔄</span>
+                <div>
+                    <h3 class="feature-title">Seamless Integration</h3>
+                    <p class="feature-description">Easy integration with existing systems</p>
+                </div>
+            </div>
+            
+            <div class="copyright">© 2024 MedTrace. All rights reserved.</div>
+        </div>
+        
+        <div class="login-container">
+            <div class="login-box">
+                <h2 class="portal-title">
+                    <span>🏭</span>
+                    Manufacturer Portal
+                </h2>
+                <p class="portal-subtitle">Enter your credentials to access your account</p>
+                
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="email" required>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" id="password" required>
+                        <div class="error-message" id="passwordError"></div>
+                    </div>
+                    
+                    <button type="submit" class="signin-button">Sign In →</button>
+                    
+                    <div class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                    
+                    <div class="divider">or continue with</div>
+                    
+                    <div class="social-signin">
+                        <button type="button" class="social-button">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjNDI4NWY0IiBkPSJNMjIuNTYgMTIuMjVjMC0uNzgtLjA3LTEuNTMtLjItMi4yNUgxMnYxMi41aDUuOTJjLS4yNiAxLjM3LTEuMDQgMi41My0yLjIxIDMuMzF2Mi43N2gzLjU3YzIuMDgtMS45MiAzLjI4LTQuNzQgMy4yOC04LjA4WiIvPjxwYXRoIGZpbGw9IiMzNGE4NTMiIGQ9Ik0xMiAyM2MyLjk3IDAgNS40Ni0uOTggNy4yOC0yLjY2bC0zLjU3LTIuNzdjLTEuMDMuNjktMi4zOSAxLjEtMy43MSAxLjEtMi44NSAwLTUuMjktMS45MS02LjE2LTQuNDhILjY2djIuODZDMi4zNCAyMC4wMyA2LjcyIDIzIDEyIDIzWiIvPjxwYXRoIGZpbGw9IiNmYmJjMDUiIGQ9Ik01Ljg0IDE0LjE5Yy0uMjItLjY2LS4zNS0xLjM2LS4zNS0yLjA5cy4xMy0xLjQzLjM1LTIuMDlWNy4wN0guNjZDLjI0IDguMjEgMCA5LjQ2IDAgMTAuODBzLjI0IDIuNTkuNjYgMy43M2w1LjE4LTIuNzRaIi8+PHBhdGggZmlsbD0iI2VhNDMzNSIgZD0iTTEyIDUuNjRjMS42MiAwIDMuMDYuNTYgNC4yMSAxLjY0bDMuMTUtMy4xNUMxNy40NSAyLjMxIDE0Ljk3IDEgMTIgMSA2LjcyIDEgMi4zNCAzLjk3LjY2IDcuOTFsNS4xOCAyLjc0YzEuODctMi41NiA0LjMxLTQuNDggNi4xNi00LjQ4WiIvPjwvc3ZnPg==">
+                            Sign in with Google
+                        </button>
+                        <button type="button" class="social-button">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDA3OGQ0IiBkPSJNMjQgMTIuMDdjMCA2LjYyLTUuMzggMTItMTIgMTJTMCAxOC43IDAgMTIuMDdDMCA1LjQxIDUuMzggMCAxMiAwczEyIDUuNDEgMTIgMTIuMDd6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEwLjUgMTYuNTRoLTIuM3YtOGgyLjN2OHptLTEuMTUtOS4xYy0uNzQgMC0xLjM0LS42LTEuMzQtMS4zNXMuNi0xLjM0IDEuMzQtMS4zNCAxLjM0LjYgMS4zNCAxLjM0LS42IDEuMzQtMS4zNCAxLjM0em05LjE1IDkuMWgtMi4yOHYtMy44OWMwLS44NS0uMDItMS45NC0xLjE4LTEuOTQtMS4xOCAwLTEuMzYuOTMtMS4zNiAxLjg5djMuOTRoLTIuMjZ2LThoMi4xN3YxaC4wM2MuMy0uNTggMS4wNC0xLjE5IDIuMTQtMS4xOSAyLjI5IDAgMi43MSAxLjUgMi43MSAzLjQ2djQuNzN6Ii8+PC9zdmc+">
+                            Sign in with Microsoft
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+            
+            // Email validation
+            // Email validation
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!email.value) {
+                emailError.textContent = 'Email is required';
+                emailError.style.display = 'block';
+                email.classList.add('error');
+                isValid = false;
+            } else if (!emailPattern.test(email.value)) {
+                emailError.textContent = 'Please enter a valid email address';
+                emailError.style.display = 'block';
+                email.classList.add('error');
+                isValid = false;
+            } else {
+                emailError.style.display = 'none';
+                email.classList.remove('error');
+            }
+            
+            // Password validation
+            const password = document.getElementById('password');
+            const passwordError = document.getElementById('passwordError');
+            
+            if (!password.value) {
+                passwordError.textContent = 'Password is required';
+                passwordError.style.display = 'block';
+                password.classList.add('error');
+                isValid = false;
+            } else if (password.value.length < 8) {
+                passwordError.textContent = 'Password must be at least 8 characters long';
+                passwordError.style.display = 'block';
+                password.classList.add('error');
+                isValid = false;
+            } else {
+                passwordError.style.display = 'none';
+                password.classList.remove('error');
+            }
+            
+            if (isValid) {
+                // Show loading state
+                const submitButton = document.querySelector('.signin-button');
+                const originalText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Signing in...';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Reset button state
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                    
+                    // Simulate successful login
+                    handleSuccessfulLogin();
+                }, 1500);
+            }
+        });
+
+        // Add input focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+
+        // Password visibility toggle
+        function addPasswordToggle() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.createElement('button');
+            toggleButton.type = 'button';
+            toggleButton.className = 'password-toggle';
+            toggleButton.innerHTML = '👁️';
+            toggleButton.style.cssText = `
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 4px;
+                opacity: 0.6;
+            `;
+            
+            passwordInput.parentElement.style.position = 'relative';
+            passwordInput.parentElement.appendChild(toggleButton);
+            
+            toggleButton.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                toggleButton.innerHTML = type === 'password' ? '👁️' : '👁️‍🗨️';
+            });
+        }
+
+        // Social sign-in button effects
+        document.querySelectorAll('.social-button').forEach(button => {
+            button.addEventListener('mouseover', function() {
+                this.style.transform = 'translateY(-1px)';
+                this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            });
+            
+            button.addEventListener('mouseout', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+            
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const provider = this.textContent.includes('Google') ? 'Google' : 'Microsoft';
+                handleSocialSignIn(provider);
+            });
+        });
+
+        // Simulate successful login
+        function handleSuccessfulLogin() {
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #43a047;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                transform: translateX(120%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+            `;
+            notification.textContent = 'Successfully signed in! Redirecting...';
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Redirect after delay
+            setTimeout(() => {
+                window.location.href = '/mdashboard';
+            }, 2000);
+        }
+
+        // Handle social sign-in
+        function handleSocialSignIn(provider) {
+            const button = document.querySelector(`.social-button:contains('${provider}')`);
+            const originalText = button.textContent;
+            
+            // Show loading state
+            button.disabled = true;
+            button.textContent = `Connecting to ${provider}...`;
+            
+            // Simulate OAuth flow
+            setTimeout(() => {
+                button.disabled = false;
+                button.textContent = originalText;
+                handleSuccessfulLogin();
+            }, 1500);
+        }
+
+        // Initialize password toggle
+        addPasswordToggle();
+
+        // Add form autofill detection
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('animationstart', function(e) {
+                if (e.animationName === 'autofill') {
+                    this.classList.add('autofilled');
+                }
+            });
+        });
+
+        // Add keyboard navigation enhancement
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.classList.contains('form-input')) {
+                const inputs = Array.from(document.querySelectorAll('.form-input'));
+                const currentIndex = inputs.indexOf(e.target);
+                const nextInput = inputs[currentIndex + 1];
+                
+                if (nextInput) {
+                    nextInput.focus();
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <title>MedTrace - Manufacturer Portal</title>
+  
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --primary-color: #0095ff;
+            --primary-dark: #1a56db;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            background-color: #f9fafb;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 250px;
+            background: white;
+            padding: 1rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            background: var(--primary-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: #111827;
+            font-size: 1.875rem;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+        }
+
+        .new-shipment {
+            display: flex;
+            gap: 20px;
+        }
+
+        .new-shipment-btn {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2);
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-gray);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            background: #fff7ed;
+            color: #c2410c;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .view-btn {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .edit-btn {
+            background: #10b981;
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 500px;
+            margin: 50px auto;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .submit-btn {
+            background: var(--primary-dark);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">M</div>
+            <div>
+                <div><strong>MedTrace</strong></div>
+                <div class="logo-text">Manufacturer Portal</div>
+            </div>
+        </div>
+        <nav>
+            <a href="#" class="nav-item" onclick="window.location.href='{{ url_for('mdashboard') }}';">
+                <span>📊</span>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item active" onclick="window.location.href='{{ url_for('mship') }}';">
+                <span>🚚</span>
+                Shipments
+            </a>
+            <a href="#" class="nav-item" onclick="window.location.href='{{ url_for('mprofile') }}';">
+                <span>👤</span>
+                Profile
+            </a>
+            <a href="#" class="nav-item" onclick="window.location.href='{{ url_for('mformulation') }}';">
+                <span style="color: #0095ff;"><i class="fas fa-pills"></i></span>
+
+                Formulation
+            </a>
+            <a href="#" class="nav-item" onclick="window.location.href='{{ url_for('mnotification') }}';">
+                <span>🔔</span>
+                Notifications
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Shipments</h1>
+            <div class="new-shipment" > 
+                <button class="new-shipment-btn" onclick="openAddModal()">
+                <span>+</span>
+                New Shipment
+                </button>
+                <button class="new-shipment-btn" onclick="window.location.href = '{{ url_for('map') }}';">
+                    map
+                </button> </div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search shipments..." class="search-input">
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Shipment ID</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Batch Number</th>
+                    <th>Destination</th>
+                    <th>Status</th>
+                    <th>RFID Block ID</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="shipments-table-body">
+                {% if shipments %}
+                    {% for shipment in shipments %}
+                    <tr>
+                        <td>{{ shipment.shipment_id }}</td>
+                        <td>{{ shipment.product }}</td>
+                        <td>{{ shipment.quantity }}</td>
+                        <td>{{ shipment.batchNumber }}</td>
+                        <td>{{ shipment.destination }}</td>
+                        <td><span class="status-badge" style="background:{% if shipment.status == 'Received' %}#dcfce7{% else %}#fff7ed{% endif %}; color:{% if shipment.status == 'Received' %}#166534{% else %}#c2410c{% endif %}">{{ shipment.status }}</span></td>
+                        <td><code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: #475569;">{{ shipment.rfid_code }}</code></td>
+                        <td>{{ shipment.shipmentDate }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view-btn" onclick="resendToArduino('{{ shipment.rfid_code }}')" title="Re-sync Block to Arduino">💳 RFID</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="9" style="text-align: center; color: #6b7280;">No shipments in Database yet.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </main>
+    <div id="addShipmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Shipment</h2>
+                <button class="close-btn" onclick="closeAddModal()">×</button>
+            </div>
+            <form id="shipmentForm">
+                <hr style="margin: 1rem 0; border: 1px solid #e0e0e0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; font-size: 1.1rem; color: #111827;">Drug Items</h3>
+                    <button type="button" onclick="addDrugRow()" style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">+ Add Drug</button>
+                </div>
+                
+                <div id="drugsContainer">
+                    <!-- Drug rows will be added here -->
+                </div>
+
+                <hr style="margin: 1rem 0; border: 1px solid #e0e0e0;">
+                <div class="form-group">
+                    <label for="destination">Pharmacy Name (Destination)</label>
+                    <input type="text" id="destination" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Pharmacy Email ID</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="shipmentDate">Shipment Date</label>
+                    <input type="date" id="shipmentDate" required>
+                </div>
+                <button type="button" class="submit-btn" id="createBtn" onclick="submitShipment()">Encrypt & Write to RFID</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#shipments-table-body tr');
+            
+            rows.forEach(row => {
+                if (row.cells.length < 2) return;
+                const shipmentId = row.cells[0].textContent.toLowerCase();
+                const product = row.cells[1].textContent.toLowerCase();
+                const destination = row.cells[4].textContent.toLowerCase();
+                
+                const matches = shipmentId.includes(searchTerm) || 
+                              product.includes(searchTerm) || 
+                              destination.includes(searchTerm);
+                              
+                row.style.display = matches ? '' : 'none';
+            });
+        });
+
+        // Modal functions
+        function openAddModal() {
+            document.getElementById('addShipmentModal').style.display = 'block';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addShipmentModal').style.display = 'none';
+        }
+
+        let drugCount = 0;
+
+        function addDrugRow() {
+            drugCount++;
+            const container = document.getElementById('drugsContainer');
+            const row = document.createElement('div');
+            row.className = 'drug-row';
+            row.style = 'background: #f8fafc; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid var(--border-color); position: relative;';
+            row.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" style="position: absolute; right: 10px; top: 10px; background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; font-size: 1.2rem;">&times;</button>
+                <div class="form-group">
+                    <label>Drug Name / Product</label>
+                    <input type="text" class="d-product" required>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Quantity</label>
+                        <input type="number" class="d-quantity" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Batch Number</label>
+                        <input type="text" class="d-batch" required>
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        // Add first row by default
+        addDrugRow();
+
+        // Add new shipment
+        async function submitShipment() {
+            const form = document.getElementById('shipmentForm');
+            if(!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const drugRows = document.querySelectorAll('.drug-row');
+            const drugs = [];
+            
+            drugRows.forEach(row => {
+                const dn = row.querySelector('.d-product').value.trim();
+                const u = row.querySelector('.d-quantity').value.trim();
+                const bn = row.querySelector('.d-batch').value.trim();
+                if(dn && u && bn) {
+                    drugs.push({
+                        drugName: dn,
+                        units: u,
+                        batchNumber: bn
+                    });
+                }
+            });
+
+            if (drugs.length === 0) {
+                alert('Please check inputs and add at least one drug.');
+                return;
+            }
+
+            const btn = document.getElementById('createBtn');
+            btn.textContent = 'Writing to RFID...';
+            btn.disabled = true;
+            
+            const newShipment = {
+                drugs: drugs,
+                destination: document.getElementById('destination').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                shipmentDate: document.getElementById('shipmentDate').value.trim()
+            };
+            
+            try {
+                const response = await fetch('/m_generate_rfid', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newShipment)
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`✅ Generated Encrypted Block!\nBlock ID: ${data.rfid_code}\n\n🤖 Arduino Link: ${data.arduino}\n(Tap your RFID Tag to write this block)`);
+                    window.location.reload();
+                } else {
+                    alert('Error from DB: ' + data.error);
+                }
+            } catch(e) {
+                alert('Connection Error talking to Server.');
+            }
+            
+            btn.textContent = 'Encrypt & Write to RFID';
+            btn.disabled = false;
+        }
+
+        async function resendToArduino(rfidCode) {
+            if(!confirm(`Re-sync Block ID to Arduino?\n\nBlock ID: ${rfidCode}\n\nEnsure Arduino is plugged in and ready.`)) return;
+            
+            try {
+                const response = await fetch('/write_rfid', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ rfid_code: rfidCode })
+                });
+                const data = await response.json();
+                if(data.success) {
+                    alert(`🤖 Arduino Link: ${data.arduino}\n\nPlease tap exactly one RFID Tag on the reader to burn this existing block!`);
+                } else {
+                    alert('Sync Failed: ' + data.error);
+                }
+            } catch(e) {
+                alert('Connection error talking to Python Server.');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('addShipmentModal')) {
+                closeAddModal();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedSure</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.ico') }}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pharma.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/rbgmedsure_logo.png') }}" alt="App Logo" class="app-logo">
+                <p class="tagline">Ensuring authenticity, One scan at a time</p>
+            </div>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#scan-medicine">Scan Medicine QR</a></li>
+                <li><a href="#verify-medicine">Verify Medicine</a></li>
+                <li><a href="#view-history">View Scan History</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <section id="scan-medicine" class="section">
+                <h3>Scan Medicine QR</h3>
+                <button type="button" onclick="openCamera()">Open Camera to Scan QR</button>
+                <p>OR</p>
+                <h4>Upload QR Code Image</h4>
+                <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="image-upload" name="file" accept="image/*" required>
+                    <button type="submit">Upload QR Code</button>
+                </form>
+            </section>
+            <section id="verify-medicine" class="section">
+                <h3>Verify Medicine</h3>
+                <div id="verification-status">
+                    <!-- Verification status will be displayed here -->
+                </div>
+                <div id="medicine-details">
+                    <!-- Medicine details will be displayed here -->
+                </div>
+                <div id="alert-message">
+                    <!-- Alert message will be displayed here if the medicine is fake -->
+                </div>
+            </section>
+            <section id="view-history" class="section">
+                <h3>View Scan History</h3>
+                <input type="text" id="search-bar" placeholder="Search by Date, Status, etc.">
+                <ul id="history-list">
+                    <!-- List of scan history will be displayed here -->
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/pharmadash.js') }}"></script>
+</body>
+</html>

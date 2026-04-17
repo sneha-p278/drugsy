@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedSure</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.ico') }}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manudash.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/rbgmedsure_logo.png') }}" alt="App Logo" class="app-logo">
+                <p class="tagline">Ensuring authenticity, One scan at a time</p>
+            </div>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#upload-medicine">Upload Medicine Data</a></li>
+                <li><a href="#view-products">View Uploaded Products</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <section id="upload-medicine" class="section">
+                <h3>Upload Medicine Data</h3>
+                <form id="upload-form" action="{{ url_for('qrgeneration') }}" method="post">
+                    <label for="name">Medicine Name</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="batch_number">Batch Number</label>
+                    <input type="text" id="batch_number" name="batch_number" required>
+
+                    <label for="expiry_date">Expiry Date</label>
+                    <input type="date" id="expiry_date" name="expiry_date" required>
+
+                    <label for="barcode">Serial Number</label>
+                    <input type="text" id="barcode" name="barcode" required>
+
+                    <label for="Phara_name">Pharmacy Name:</label>
+                    <input type="text" id="Phara_name" name="Pharma_name" required>
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <button type="submit">Generate QR Code</button>
+
+                    <div id="barcode-area">
+                        {% if qr_image %}
+                            <h2>Generated QR Code</h2>
+                            <a href="{{ qr_download_url }}" download id="download-btn">Download QR Code</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </section>
+            <section id="view-products" class="section">
+                <h3>View Uploaded Products</h3>
+                <input type="text" id="search-bar" placeholder="Search by Batch Number, Date, etc.">
+                <ul id="product-list">
+
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/manudash.js') }}"></script>
+</body>
+</html>

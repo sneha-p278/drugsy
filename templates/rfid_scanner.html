@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFID Scanner Simulation</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #f8fafc; padding: 2rem; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .input-group { margin: 2rem 0; }
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; margin-bottom: 1rem; box-sizing: border-box; text-align: center; font-family: monospace; }
+        button { background: #1a56db; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; }
+        .result { margin-top: 2rem; text-align: left; background: #f1f5f9; padding: 1.5rem; border-radius: 8px; display: none; }
+        .status-badge { display: inline-block; background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 99px; font-weight: bold; font-size: 14px; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="color: #1e293b;">📡 Pharmacy RFID Scanner</h2>
+        <p style="color: #64748b;">Simulate scanning an RFID card. Paste the fixed 16-character encrypted code (from MShip) below.</p>
+        
+        <div class="input-group">
+            <input type="text" id="rfidCode" placeholder="Enter or scan Hex block..." autocomplete="off">
+            <button onclick="simulateScan()">Scan RFID Tag</button>
+        </div>
+
+        <div id="resultBox" class="result">
+            <div class="status-badge">✅ Received</div>
+            <h3 id="resDrug" style="margin-top:0;">Shipment Details</h3>
+            <p><strong>Tracking ID:</strong> <span id="resTracking"></span></p>
+            <div id="drugsList">
+                <!-- Drug items will be appended here -->
+            </div>
+            <p><strong>Destination DB:</strong> <span id="resDest"></span></p>
+            <p style="color: #475569; font-size: 14px; margin-top: 1rem;"><i>Stored securely in Pharmacy Order Management System ledger.</i></p>
+        </div>
+    </div>
+
+    <script>
+        async function simulateScan() {
+            const code = document.getElementById('rfidCode').value.trim();
+            if(!code) return alert("Please enter the scanned RFID code.");
+
+            try {
+                const response = await fetch('/scan_rfid', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ rfid_code: code })
+                });
+                
+                const data = await response.json();
+                
+                if(data.success) {
+                    document.getElementById('resultBox').style.display = 'block';
+                    document.getElementById('resTracking').textContent = data.shipment.shipment_id;
+                    document.getElementById('resDest').textContent = data.shipment.destination;
+                    
+                    let drugsHtml = '';
+                    if (data.shipment.drugs && data.shipment.drugs.length > 0) {
+                        data.shipment.drugs.forEach(d => {
+                            drugsHtml += `<div style="background: white; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <p style="margin: 0;"><strong>Drug:</strong> ${d.drugName}</p>
+                                <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #475569;"><strong>Qty:</strong> ${d.units} | <strong>Batch:</strong> ${d.batchNumber}</p>
+                            </div>`;
+                        });
+                    } else if (data.shipment.product) {
+                        // Legacy single-drug
+                        drugsHtml = `<div style="background: white; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <p style="margin: 0;"><strong>Drug:</strong> ${data.shipment.product}</p>
+                                <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #475569;"><strong>Qty:</strong> ${data.shipment.quantity} | <strong>Batch:</strong> ${data.shipment.batchNumber}</p>
+                            </div>`;
+                    }
+                    document.getElementById('drugsList').innerHTML = drugsHtml;
+                } else {
+                    document.getElementById('resultBox').style.display = 'none';
+                    alert("❌ Scan Failed: " + data.message);
+                }
+            } catch(e) {
+                alert("Connection Error.");
+            }
+        }
+    </script>
+</body>
+</html>

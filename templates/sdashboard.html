@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrace - Inventory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #1e88e5;
+            --white: #ffffff;
+            --light-blue: rgba(30, 136, 229, 0.08);
+            --hover-blue: rgba(30, 136, 229, 0.15);
+            --gradient-blue: linear-gradient(135deg, #1e88e5 0%, #64b5f6 100%);
+            --shadow-sm: 0 2px 4px rgba(30, 136, 229, 0.1);
+            --shadow-md: 0 4px 6px rgba(30, 136, 229, 0.1);
+            --shadow-lg: 0 10px 15px rgba(30, 136, 229, 0.1);
+            --border-color: rgba(30, 136, 229, 0.15);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            background: var(--white);
+            padding: 24px;
+            box-shadow: 5px 0 20px rgba(30, 136, 229, 0.1);
+            border-right: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 0 12px;
+        }
+
+        .logo img {
+            width: 54px;
+            height: 54px;
+            background: var(--gradient-blue);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            margin: 8px 0;
+            border-radius: 16px;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:hover {
+            color: var(--primary-blue);
+            background: var(--light-blue);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: var(--gradient-blue);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+        }
+
+        .menu-item i {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover i {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .main-content {
+            margin-left: 300px;
+            padding: 40px;
+            max-width: 1600px;
+        }
+
+        .inventory-container {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            font-size: 32px;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 32px;
+            font-weight: 800;
+        }
+
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .summary-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--border-color);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-blue);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px rgba(30, 136, 229, 0.15);
+        }
+
+        .summary-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .summary-value {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin: 16px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .summary-label {
+            color: #64748b;
+            font-size: 16px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+
+        .daily-sales-form {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 40px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            color: #1e293b;
+            background: var(--light-blue);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(30, 136, 229, 0.15);
+            background: var(--white);
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-blue);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--hover-blue);
+        }
+
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stock-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--border-color);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stock-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-blue);
+            opacity: 0.1;
+            border-radius: 0 0 0 100%;
+            transition: all 0.4s ease;
+        }
+
+        .stock-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px rgba(30, 136, 229, 0.15);
+        }
+
+        .stock-card:hover::after {
+            transform: scale(1.5);
+            opacity: 0.15;
+        }
+
+        .stock-header h3 {
+            font-size: 20px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .stock-status {
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-low {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .status-medium {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .status-good {
+            background: #dcfce7;
+            color: #22c55e;
+        }
+
+        @media (max-width: 1024px) {
+            .summary-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .main-content {
+                margin-left: 100px;
+            }
+            
+            .sidebar {
+                width: 100px;
+            }
+            
+            .logo-text, .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                padding: 16px;
+                justify-content: center;
+            }
+            
+            .menu-item i {
+                margin: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .summary-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stock-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/api/placeholder/40/40" alt="MedTrace Logo">
+            <div>
+                <div class="logo-text">MedTrace</div>
+                <div class="logo-subtitle">Retailer Portal</div>
+            </div>
+        </div>
+       
+        <div class="menu-item active" onclick="window.location.href='{{ url_for('sdashboard') }}';">
+            <i class="fas fa-chart-line"></i>
+            Dashboard
+        </div>
+        <div class="menu-item " onclick="window.location.href='{{ url_for('sinventory') }}';">
+            <i class="fas fa-box"></i>
+            Inventory
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('sprofile') }}';">
+            <i class="fas fa-user"></i>
+            Profile
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('snotification') }}';">
+            <i class="fas fa-bell"></i>
+            Notifications
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="inventory-container">
+            <h2 class="section-title">Daily Stock Clearance</h2>
+            
+            <!-- Summary Section -->
+            <div class="summary-section">
+                <div class="summary-card">
+                    <div class="summary-value" id="itemsSold">0</div>
+                    <div class="summary-label">Items Sold Today</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="lowStock">0</div>
+                    <div class="summary-label">Low Stock Items</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="outOfStock">0</div>
+                    <div class="summary-label">Out of Stock</div>
+                </div>
+            </div>
+
+            <!-- Daily Sales Entry Form -->
+            <div class="daily-sales-form">
+                <h3 style="margin-bottom: 15px;">Record Sale</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Medicine Name</label>
+                        <input type="text" id="medicineName" placeholder="Enter medicine name">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity Sold</label>
+                        <input type="number" id="quantitySold" placeholder="Enter quantity">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="recordSale()">Record Sale</button>
+                    <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                </div>
+            </div>
+
+            <!-- Stock Grid -->
+            <div class="stock-grid" id="stockGrid">
+                <!-- Stock cards will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let stockData = {{ inventory | tojson | safe }};
+
+        // Initialize the page
+        function initializePage() {
+            updateSummary();
+            renderStockGrid();
+        }
+
+        // Update summary section
+        function updateSummary() {
+            let itemsSold = 0;
+            let lowStock = 0;
+            let outOfStock = 0;
+
+            stockData.forEach(item => {
+                itemsSold += item.soldToday;
+                if (item.currentStock === 0) outOfStock++;
+                else if (item.currentStock < 0.2 * item.initialStock) lowStock++;
+            });
+
+            document.getElementById('itemsSold').textContent = itemsSold;
+            document.getElementById('lowStock').textContent = lowStock;
+            document.getElementById('outOfStock').textContent = outOfStock;
+        }
+
+        // Render stock grid
+        function renderStockGrid() {
+            const grid = document.getElementById('stockGrid');
+            grid.innerHTML = '';
+
+            stockData.forEach(item => {
+                const stockLevel = getStockLevel(item.currentStock, item.initialStock);
+                const card = document.createElement('div');
+                card.className = 'stock-card';
+                card.innerHTML = `
+                    <div class="stock-header">
+                        <h3>${item.name}</h3>
+                        <span class="stock-status status-${stockLevel}">${stockLevel.toUpperCase()}</span>
+                    </div>
+                    <div class="stock-details">
+                        <div class="stock-item">
+                            <span>Current Stock:</span>
+                            <span>${item.currentStock} units</span>
+                        </div>
+                        <div class="stock-item">
+                            <span>Sold Today:</span>
+                            <span>${item.soldToday} units</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Get stock level status
+        function getStockLevel(current, initial) {
+            if (current === 0) return 'low';
+            const percentage = (current / initial) * 100;
+            if (percentage < 20) return 'low';
+            if (percentage < 50) return 'medium';
+            return 'good';
+        }
+
+        // Record new sale
+        function recordSale() {
+            const name = document.getElementById('medicineName').value;
+            const quantity = parseInt(document.getElementById('quantitySold').value);
+
+            if (!name || !quantity) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            fetch('/record_sale', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, quantity: quantity })
+            }).then(r => r.json()).then(res => {
+                if(res.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + res.error);
+                }
+            }).catch(err => {
+                console.error(err);
+                alert('Failed to record sale');
+            });
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('medicineName').value = '';
+            document.getElementById('quantitySold').value = '';
+        }
+
+        // Initialize the page when loaded
+        window.onload = initializePage;
+    </script>
+</body>
+</html>

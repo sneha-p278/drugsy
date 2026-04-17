@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrace - Distributor Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #1e88e5;
+            --white: #ffffff;
+            --light-blue: rgba(30, 136, 229, 0.08);
+            --hover-blue: rgba(30, 136, 229, 0.15);
+            --text-primary: #2c3e50;
+            --text-secondary: #607d8b;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: var(--white);
+            padding: 24px;
+            box-shadow: 0 0 20px rgba(30, 136, 229, 0.1);
+            border-right: 1px solid rgba(30, 136, 229, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 0 12px;
+        }
+
+        .logo img {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-blue);
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 8px 16px rgba(30, 136, 229, 0.25);
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: var(--primary-blue);
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border-radius: 14px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            gap: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: var(--primary-blue);
+            opacity: 0.1;
+            transition: width 0.3s ease;
+        }
+
+        .menu-item:hover:before {
+            width: 100%;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover i {
+            transform: scale(1.1);
+            color: var(--primary-blue);
+        }
+
+        .menu-item span {
+            flex: 1;
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+
+        .menu-item.active {
+            background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+        }
+
+        .menu-item.active i {
+            color: var(--white);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 35px;
+            max-width: 1600px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 0 10px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+
+        .header h1:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 40px;
+            height: 4px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
+
+        .time-filters {
+            display: flex;
+            gap: 8px;
+            background: var(--white);
+            padding: 6px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .time-filter {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            background-color: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .time-filter:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .time-filter.active {
+            background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(30, 136, 229, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            transform-origin: left;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(30, 136, 229, 0.15);
+        }
+
+        .stat-card:hover:before {
+            transform: scaleX(1);
+        }
+
+        .stat-title {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, var(--text-primary), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            color: var(--success);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .recent-activity {
+            background-color: var(--white);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(30, 136, 229, 0.1);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-blue);
+        }
+
+        .activity-header h2 {
+            font-size: 22px;
+            color: var(--text-primary);
+            font-weight: 700;
+            position: relative;
+        }
+
+        .view-all {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-blue);
+        }
+
+        .view-all:hover {
+            background: var(--light-blue);
+            transform: translateY(-2px);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 25px 0;
+            border-bottom: 1px solid var(--light-blue);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .activity-item:hover {
+            transform: translateX(8px);
+            background: var(--light-blue);
+            padding: 25px;
+            margin: 0 -25px;
+            border-radius: 12px;
+        }
+
+        .activity-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            font-size: 22px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .activity-icon:hover {
+            background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+            color: var(--white);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .activity-details h3 {
+            font-size: 17px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .activity-details p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .activity-time {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: auto;
+            padding: 6px 12px;
+            background: var(--light-blue);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover .activity-time {
+            background: var(--white);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+                padding: 20px 10px;
+            }
+
+            .logo-text, .logo-subtitle {
+                display: none;
+            }
+
+            .menu-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .time-filters {
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/api/placeholder/40/40" alt="MedTrace Logo">
+            <div>
+                <div class="logo-text">MedTrace</div>
+                <div class="logo-subtitle">Distributor Portal</div>
+            </div>
+        </div>
+        
+        <div class="menu-item active" onclick="window.location.href='{{ url_for('ddashboard') }}';">
+            <i class="fas fa-chart-line"></i>
+            Dashboard
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('dinventory') }}';">
+            <i class="fas fa-box" ></i>
+            Inventory
+        </div>
+        <div class="menu-item " onclick="window.location.href='{{ url_for('dorder') }}';">
+            <i class="fas fa-shopping-cart"></i>
+            Orders
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('dship') }}';">
+            <i class="fas fa-truck"></i>
+            Shipments
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('dprofile') }}';">
+            <i class="fas fa-user"></i>
+            Profile
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('dnotification') }}';">
+            <i class="fas fa-bell"></i>
+            Notifications
+        </div>
+        
+    </div>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>Dashboard</h1>
+            <div class="time-filters">
+                <button class="time-filter">Today</button>
+                <button class="time-filter">Week</button>
+                <button class="time-filter">Month</button>
+                <button class="time-filter">Year</button>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">TOTAL REVENUE</div>
+                <div class="stat-value">₹145,280</div>
+                <div class="stat-change">↑12.5% vs last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">TOTAL ORDERS</div>
+                <div class="stat-value">1,240</div>
+                <div class="stat-change">↑8.2% vs last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">ACTIVE SHIPMENTS</div>
+                <div class="stat-value">82</div>
+                <div class="stat-change negative">↓3.1% vs last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">LOW STOCK ITEMS</div>
+                <div class="stat-value">24</div>
+                <div class="stat-change">↑5.8% vs last month</div>
+            </div>
+        </div>
+
+        <section class="recent-activity">
+            <div class="activity-header">
+                <h2>Recent Activity</h2>
+                <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="activity-list">
+                <!-- Activity items will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Sample data for recent activities
+        const activities = [
+            {
+                type: 'order',
+                title: 'New order received',
+                description: 'Order #12345 from City Hospital',
+                time: '2 minutes ago'
+            },
+            {
+                type: 'delivery',
+                title: 'Shipment delivered',
+                description: 'Order #12342 to MedCare Pharmacy',
+                time: '1 hour ago'
+            },
+            {
+                type: 'alert',
+                title: 'Low stock alert',
+                description: 'Paracetamol 500mg is running low',
+                time: '3 hours ago'
+            }
+        ];
+
+        // Function to render activity items
+        function renderActivities() {
+            const activityList = document.querySelector('.activity-list');
+            activityList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.type}">
+                        <i class="fas fa-${activity.type === 'order' ? 'shopping-cart' : 
+                                        activity.type === 'delivery' ? 'truck' : 'exclamation-triangle'}"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h3>${activity.title}</h3>
+                        <p>${activity.description}</p>
+                    </div>
+                    <div class="activity-time">${activity.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
+        });
+    </script>
+    <!-- Add Font Awesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+</body>
+</html>

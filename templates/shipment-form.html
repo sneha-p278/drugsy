@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Shipment</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .shipment-form-container {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(30, 136, 229, 0.15);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h2 {
+      color: #1e88e5;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    h3 {
+      color: #1e88e5;
+      margin: 1.5rem 0;
+      font-size: 1.5rem;
+    }
+
+    form {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    label {
+      color: #444;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #1e88e5;
+      box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+    }
+
+    .btn {
+      background-color: #1e88e5;
+      color: #ffffff;
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    .btn:hover {
+      background-color: #1565c0;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(30, 136, 229, 0.25);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    #qrCodeContainer {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    #qrCode {
+      max-width: 200px;
+      margin: 1rem auto;
+      border: 2px solid #1e88e5;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    #downloadLink {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .shipment-form-container {
+        padding: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+      }
+
+      input {
+        padding: 0.625rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shipment-form-container">
+    <h2>Enter Shipment Details</h2>
+    <form id="shipmentFormContent">
+      <label for="pharmacyName">Destination Pharmacy Name</label>
+      <input type="text" id="pharmacyName" name="pharmacyName" required>
+
+      <label for="email">Pharmacy Email ID</label>
+      <input type="email" id="email" name="email" required>
+
+      <hr style="margin: 1rem 0; border: 1px solid #e0e0e0;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0;">Drug Items</h3>
+        <button type="button" class="btn btn-secondary" onclick="addDrugRow()" style="margin: 0; padding: 0.5rem 1rem; background: #607d8b;">+ Add Drug</button>
+      </div>
+
+      <div id="drugsContainer">
+        <!-- Inside drugsContainer, we'll append drug items -->
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">Generate Single Shipment QR</button>
+    </form>
+
+    <div id="qrCodeContainer">
+      <h3>Generated QR Code:</h3>
+      <img id="qrCode" src="" alt="QR Code" style="display: none;">
+    </div>
+
+    <!-- Download Button -->
+    <div id="downloadLink" style="display: none;">
+      <a href="#" id="downloadButton" class="btn btn-primary" download="shipment_qr.png" style="width: 100%;">Download QR Code</a>
+    </div>
+  </div>
+
+  <script>
+    let drugCount = 0;
+
+    function addDrugRow() {
+      drugCount++;
+      const container = document.getElementById("drugsContainer");
+      const row = document.createElement("div");
+      row.className = "drug-row";
+      row.style = "background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #e0e0e0; position: relative;";
+      row.innerHTML = `
+        <button type="button" onclick="this.parentElement.remove()" style="position: absolute; right: 10px; top: 10px; background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; font-size: 1.2rem;">&times;</button>
+        <label>Drug ID</label>
+        <input type="text" class="d-id" required style="margin-bottom: 0.5rem;">
+        <label>Drug Name</label>
+        <input type="text" class="d-name" required style="margin-bottom: 0.5rem;">
+        <label>Units / Quantity</label>
+        <input type="number" class="d-units" required>
+      `;
+      container.appendChild(row);
+    }
+
+    // Add first row by default
+    addDrugRow();
+
+    document.getElementById("shipmentFormContent").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const pharmacyName = document.getElementById("pharmacyName").value;
+      const email = document.getElementById("email").value;
+
+      const drugRows = document.querySelectorAll('.drug-row');
+      const drugs = [];
+
+      drugRows.forEach(row => {
+          drugs.push({
+              drugId: row.querySelector('.d-id').value,
+              drugName: row.querySelector('.d-name').value,
+              units: row.querySelector('.d-units').value
+          });
+      });
+
+      if(drugs.length === 0) {
+          alert("Please add at least one drug");
+          return;
+      }
+
+      const payload = {
+          pharmacyName: pharmacyName,
+          email: email,
+          drugs: drugs
+      };
+
+      // Send POST request to generate QR code
+      fetch('/generate_qr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const qrImagePath = data.qr_image;
+
+        // Display the QR code
+        const qrImage = document.getElementById("qrCode");
+        qrImage.src = qrImagePath;
+        qrImage.style.display = 'block';
+
+        // Show the download link
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.style.display = 'block';
+
+        // Set the download URL to the image
+        const downloadButton = document.getElementById("downloadButton");
+        downloadButton.href = qrImagePath;
+      })
+      .catch(error => console.error('Error generating QR code:', error));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5; /* Lighter background for better contrast */
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #2C3E50; /* Deep blue for modern look */
+    color: white;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.15); /* Slightly stronger shadow for depth */
+}
+
+.sidebar .logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar .app-logo {
+    max-width: 80%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.sidebar .tagline {
+    font-size: 14px;
+    color: #bdc3c7; /* Soft gray for better readability */
+    margin: 0;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    background-color: #34495e; /* Darker background for links */
+    border-radius: 5px;
+    text-align: center;
+}
+
+.sidebar ul li a:hover {
+    background-color: #1abc9c; /* Bright green hover effect */
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #ffffff; /* White background for content */
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section h3 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #2C3E50; /* Matching section headers with sidebar */
+}
+
+#upload-form label {
+    display: block;
+    margin: 10px 0 5px;
+    color: #34495e; /* Dark gray text for form labels */
+}
+
+#upload-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #48CFCB; /* Soft teal border */
+    border-radius: 5px;
+    font-size: 16px;
+    color: #2C3E50; /* Matching input text color */
+}
+
+#upload-form button {
+    background-color: #48CFCB; /* Fresh teal */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#upload-form button:hover {
+    background-color: #16a085; /* Darker teal on hover */
+}
+
+/* Style for the barcode area */
+#barcode-area {
+    text-align: center;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+    background-color: #ecf0f1; /* Light gray background for barcode area */
+}
+
+/* Style for the QR code image */
+#barcode-area img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+#barcode-area h2 {
+    font-size: 24px;
+    color: #34495e; /* Dark text for heading */
+    margin-bottom: 10px;
+}
+
+/* Style for the download button */
+#download-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #4CAF50; /* Green for download button */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#download-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+#search-bar {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #34495e; /* Dark gray text for search input */
+}
+
+#product-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#product-list li {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9; /* Light gray background for list items */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for list items */
+}
+
+#product-list li button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#product-list li button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}

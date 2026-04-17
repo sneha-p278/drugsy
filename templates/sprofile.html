@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrace - Company Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+
+      :root {
+          --primary-blue: #1e88e5;
+          --white: #ffffff;
+          --light-blue: rgba(30, 136, 229, 0.08);
+          --hover-blue: rgba(30, 136, 229, 0.15);
+          --text-primary: #2c3e50;
+          --text-secondary: #607d8b;
+          --success: #22c55e;
+          --danger: #ef4444;
+      }
+
+      body {
+          background-color: #f8fafc;
+          min-height: 100vh;
+      }
+
+      .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 280px;
+          background: var(--white);
+          padding: 24px;
+          box-shadow: 0 0 20px rgba(30, 136, 229, 0.1);
+          border-right: 1px solid rgba(30, 136, 229, 0.1);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 1000;
+      }
+
+      .logo {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 40px;
+          padding: 0 12px;
+      }
+
+      .logo img {
+          width: 48px;
+          height: 48px;
+          background: var(--primary-blue);
+          border-radius: 14px;
+          padding: 10px;
+          box-shadow: 0 8px 16px rgba(30, 136, 229, 0.25);
+          transition: transform 0.3s ease;
+      }
+
+      .logo img:hover {
+          transform: scale(1.05);
+      }
+
+      .logo-text {
+          font-size: 24px;
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: -0.5px;
+          background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+      }
+
+      .logo-subtitle {
+          font-size: 14px;
+          color: var(--primary-blue);
+          font-weight: 500;
+          opacity: 0.9;
+      }
+
+      .menu-item {
+          display: flex;
+          align-items: center;
+          padding: 16px 20px;
+          margin: 8px 0;
+          border-radius: 14px;
+          cursor: pointer;
+          color: var(--text-secondary);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          font-weight: 500;
+          gap: 18px;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .menu-item:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 0;
+          background: var(--primary-blue);
+          opacity: 0.1;
+          transition: width 0.3s ease;
+      }
+
+      .menu-item:hover:before {
+          width: 100%;
+      }
+
+      .menu-item i {
+          font-size: 18px;
+          width: 24px;
+          text-align: center;
+          flex-shrink: 0;
+          transition: transform 0.3s ease;
+      }
+
+      .menu-item:hover i {
+          transform: scale(1.1);
+          color: var(--primary-blue);
+      }
+
+      .menu-item span {
+          flex: 1;
+          white-space: nowrap;
+          transition: color 0.3s ease;
+      }
+
+      .menu-item.active {
+          background: linear-gradient(45deg, var(--primary-blue), #64b5f6);
+          color: var(--white);
+          box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3);
+      }
+
+      .menu-item.active i {
+          color: var(--white);
+      }
+
+      .main-content {
+          margin-left: 280px;
+          padding: 35px;
+          max-width: 1600px;
+      }
+
+      .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 32px;
+          padding: 24px;
+          background: var(--white);
+          border-radius: 16px;
+          box-shadow: var(--shadow-md);
+      }
+
+      .header-title h1 {
+          font-size: 28px;
+          color: var(--text-primary);
+          margin-bottom: 8px;
+          font-weight: 600;
+      }
+
+      .header-title p {
+          color: var(--text-secondary);
+          font-size: 15px;
+      }
+
+      .edit-profile-btn {
+          background: var(--primary-color);
+          color: var(--white);
+          border: none;
+          padding: 12px 24px;
+          border-radius: 12px;
+          cursor: pointer;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.3s ease;
+          box-shadow: var(--shadow-sm);
+      }
+
+      .edit-profile-btn:hover {
+          background: var(--primary-dark);
+          box-shadow: var(--shadow-md);
+          transform: translateY(-2px);
+      }
+
+      .section {
+          background: var(--white);
+          border-radius: 16px;
+          padding: 32px;
+          margin-bottom: 32px;
+          box-shadow: var(--shadow-md);
+          border: 1px solid var(--border-color);
+      }
+
+      .section-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 32px;
+          padding-bottom: 16px;
+          border-bottom: 2px solid var(--primary-light);
+      }
+
+      .section-title {
+          font-size: 22px;
+          color: var(--text-primary);
+          font-weight: 600;
+      }
+
+      .verified-badge {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: var(--success-color);
+          font-size: 15px;
+          font-weight: 600;
+          padding: 8px 16px;
+          background: #e8f5e9;
+          border-radius: 8px;
+      }
+
+      .info-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 32px;
+      }
+
+      .info-field {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 16px;
+          background: #f8fafc;
+          border-radius: 12px;
+          transition: all 0.3s ease;
+      }
+
+      .info-field:hover {
+          background: var(--primary-light);
+          transform: translateY(-2px);
+      }
+
+      .field-label {
+          color: var(--text-secondary);
+          font-size: 14px;
+          font-weight: 500;
+      }
+
+      .field-value {
+          color: var(--text-primary);
+          font-weight: 600;
+          font-size: 16px;
+      }
+
+      .security-option {
+          display: flex;
+          align-items: center;
+          padding: 20px;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-bottom: 16px;
+          background: #f8fafc;
+      }
+
+      .security-option:hover {
+          background: var(--primary-light);
+          transform: translateX(8px);
+      }
+
+      .security-icon {
+          margin-right: 16px;
+          font-size: 20px;
+          color: var(--primary-color);
+      }
+
+      @media (max-width: 1024px) {
+          .info-grid {
+              grid-template-columns: repeat(2, 1fr);
+          }
+      }
+
+      @media (max-width: 768px) {
+          .sidebar {
+              width: 80px;
+              padding: 20px 12px;
+          }
+
+          .logo-text, .logo-subtitle, .menu-item span {
+              display: none;
+          }
+
+          .main-content {
+              margin-left: 80px;
+              padding: 20px;
+          }
+
+          .info-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .header {
+              flex-direction: column;
+              gap: 16px;
+              text-align: center;
+          }
+      }
+  </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/api/placeholder/40/40" alt="MedTrace Logo">
+            <div>
+                <div class="logo-text">MedTrace</div>
+                <div class="logo-subtitle">Retailer Portal</div>
+            </div>
+        </div>
+        
+        <div class="menu-item" onclick="window.location.href='{{ url_for('sdashboard') }}';">
+            <i class="fas fa-chart-line"></i>
+            Dashboard
+        </div>
+        <div class="menu-item " onclick="window.location.href='{{ url_for('sinventory') }}';">
+            <i class="fas fa-box"></i>
+            Inventory
+        </div>
+        <div class="menu-item active" onclick="window.location.href='{{ url_for('sprofile') }}';">
+            <i class="fas fa-user"></i>
+            Profile
+        </div>
+        <div class="menu-item" onclick="window.location.href='{{ url_for('snotification') }}';">
+            <i class="fas fa-bell"></i>
+            Notifications
+        </div>
+        
+    </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="header-title">
+                    <h1>Company Profile</h1>
+                    <p>Manage your distributor information and settings</p>
+                </div>
+                <button class="edit-profile-btn">
+                    <span>Edit Profile</span>
+                </button>
+            </div>
+
+            <!-- Company Information Section -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Company Information</h2>
+                    <div class="verified-badge">
+                        <span>✓</span>
+                        <span>Verified</span>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-field">
+                        <div class="field-label">Company Name</div>
+                        <div class="field-value">MedEx Distributors</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">License Number</div>
+                        <div class="field-value">DL-2024-1234</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Email Address</div>
+                        <div class="field-value">contact@medex.com</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Phone Number</div>
+                        <div class="field-value">+1 (555) 123-4567</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Address</div>
+                        <div class="field-value">123 Medical Plaza, Suite 100</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">City</div>
+                        <div class="field-value">Sacramento</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">State</div>
+                        <div class="field-value">CA</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">ZIP Code</div>
+                        <div class="field-value">95814</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Website</div>
+                        <div class="field-value">www.medex-distributors.com</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Operating Hours</div>
+                        <div class="field-value">8:00 AM - 6:00 PM PST</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Contact Person</div>
+                        <div class="field-value">John Smith</div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Contact Role</div>
+                        <div class="field-value">Operations Manager</div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <!-- Security Settings Section -->
+            <div class="section">
+                <h2 class="section-title">Security Settings</h2>
+                <div class="security-option">
+                    <span class="security-icon">🔑</span>
+                    <span>Change Password</span>
+                </div>
+                <div class="security-option">
+                    <span class="security-icon">🔒</span>
+                    <span>Two-Factor Authentication</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add hover effects for buttons
+        const editButton = document.querySelector('.edit-profile-btn');
+        editButton.addEventListener('mouseenter', () => {
+            editButton.style.opacity = '0.9';
+        });
+        editButton.addEventListener('mouseleave', () => {
+            editButton.style.opacity = '1';
+        });
+
+        // Add click handlers for security options
+        const securityOptions = document.querySelectorAll('.security-option');
+        securityOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const action = option.textContent.trim();
+                if (action === 'Change Password') {
+                    // Implement password change functionality
+                    console.log('Opening password change dialog');
+                } else if (action === 'Two-Factor Authentication') {
+                    // Implement 2FA setup
+                    console.log('Opening 2FA setup');
+                }
+            });
+        });
+
+        // Add edit profile functionality
+        document.querySelector('.edit-profile-btn').addEventListener('click', () => {
+            // Implement edit profile functionality
+            console.log('Opening edit profile form');
+        });
+    </script>
+</body>
+</html>

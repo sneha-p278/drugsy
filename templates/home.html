@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace - Pharmaceutical Supply Chain</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <style>
+        * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+       }
+
+       :root {
+           --primary: #1e88e5;
+           --primary-light: #90caf9;
+           --primary-dark: #1565c0;
+           --white: #ffffff;
+           --gray-100: #f8f9fa;
+           --gray-200: #e9ecef;
+           --text-primary: #2b3445;
+       }
+
+       body {
+           background: var(--gray-100);
+           color: var(--text-primary);
+       }
+
+       .navbar {
+           background: var(--white);
+           box-shadow: 0 2px 15px rgba(30, 136, 229, 0.1);
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           padding: 1rem 5%;
+           position: sticky;
+           top: 0;
+           z-index: 1000;
+       }
+
+       .logo-container {
+           display: flex;
+           align-items: center;
+           gap: 0.5rem;
+       }
+
+       .logo {
+           width: 32px;
+           height: 32px;
+           background: var(--primary);
+           border-radius: 8px;
+           box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2);
+       }
+
+       .logo-text {
+           font-size: 1.5rem;
+           color: var(--primary);
+           font-weight: 600;
+       }
+
+       .nav-links {
+           display: flex;
+           gap: 2rem;
+       }
+
+       .nav-links a {
+           text-decoration: none;
+           color: var(--text-primary);
+           font-weight: 500;
+           padding: 0.5rem 1rem;
+           border-radius: 6px;
+           transition: all 0.3s ease;
+       }
+
+       .nav-links a:hover {
+           background: rgba(30, 136, 229, 0.1);
+           color: var(--primary);
+       }
+
+       .get-started-btn {
+           background: var(--primary);
+           color: var(--white);
+           padding: 0.75rem 1.5rem;
+           border-radius: 8px;
+           text-decoration: none;
+           font-weight: 500;
+           transition: all 0.3s ease;
+           box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2);
+       }
+
+       .get-started-btn:hover {
+           background: var(--primary-dark);
+           transform: translateY(-2px);
+           box-shadow: 0 6px 16px rgba(30, 136, 229, 0.3);
+       }
+
+       .hero {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           padding: 6rem 5%;
+           gap: 4rem;
+           background: linear-gradient(135deg, var(--white) 0%, var(--gray-100) 100%);
+       }
+
+       .hero-content {
+           flex: 1;
+           max-width: 600px;
+       }
+
+       .tag {
+           display: inline-flex;
+           align-items: center;
+           gap: 0.5rem;
+           background: rgba(30, 136, 229, 0.1);
+           color: var(--primary);
+           padding: 0.75rem 1.5rem;
+           border-radius: 25px;
+           margin-bottom: 2rem;
+           font-weight: 500;
+       }
+
+       .tag-icon {
+           width: 20px;
+           height: 20px;
+           background: var(--primary);
+           border-radius: 50%;
+       }
+
+       h1 {
+           color: var(--text-primary);
+           font-size: 3.5rem;
+           line-height: 1.2;
+           margin-bottom: 1.5rem;
+           background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+       }
+
+       .subtitle {
+           color: var(--text-primary);
+           font-size: 1.2rem;
+           line-height: 1.6;
+           margin-bottom: 2.5rem;
+           opacity: 0.8;
+       }
+
+       .cta-buttons {
+           display: flex;
+           gap: 1.5rem;
+       }
+
+       .primary-btn {
+           background: var(--primary);
+           color: var(--white);
+           padding: 1rem 2rem;
+           border-radius: 8px;
+           text-decoration: none;
+           font-weight: 500;
+           display: inline-flex;
+           align-items: center;
+           gap: 0.5rem;
+           transition: all 0.3s ease;
+           box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2);
+       }
+
+       .primary-btn:hover {
+           background: var(--primary-dark);
+           transform: translateY(-2px);
+           box-shadow: 0 6px 16px rgba(30, 136, 229, 0.3);
+       }
+
+       .secondary-btn {
+           border: 2px solid var(--primary);
+           color: var(--primary);
+           padding: 1rem 2rem;
+           border-radius: 8px;
+           text-decoration: none;
+           font-weight: 500;
+           display: inline-flex;
+           align-items: center;
+           gap: 0.5rem;
+           transition: all 0.3s ease;
+       }
+
+       .secondary-btn:hover {
+           background: rgba(30, 136, 229, 0.1);
+           transform: translateY(-2px);
+       }
+
+       .hero-image {
+           flex: 1;
+           max-width: 500px;
+           position: relative;
+       }
+
+       .circle-container {
+           position: relative;
+           width: 400px;
+           height: 400px;
+           animation: floatAnimation 4s ease-in-out infinite;
+       }
+
+       .main-circle {
+           position: absolute;
+           width: 300px;
+           height: 300px;
+           left: 50%;
+           top: 50%;
+           transform: translate(-50%, -50%);
+           background: linear-gradient(145deg, rgba(30, 136, 229, 0.1), rgba(30, 136, 229, 0.05));
+           border-radius: 50%;
+           backdrop-filter: blur(10px);
+           border: 1px solid rgba(30, 136, 229, 0.2);
+       }
+
+       .node {
+           position: absolute;
+           width: 50px;
+           height: 50px;
+           border-radius: 12px;
+           background: var(--white);
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           box-shadow: 0 8px 24px rgba(30, 136, 229, 0.15);
+           z-index: 2;
+           transition: all 0.3s ease;
+       }
+
+       .node:hover {
+           transform: scale(1.1);
+           box-shadow: 0 12px 32px rgba(30, 136, 229, 0.2);
+       }
+
+       .plus-node {
+           left: 60px;
+           border: 2px solid var(--primary);
+           color: var(--primary);
+           font-size: 24px;
+       }
+
+       .arrow-node {
+           left: 50%;
+           transform: translate(-50%, -50%);
+           background: var(--primary);
+           color: var(--white);
+           font-size: 20px;
+       }
+
+       .grid-node {
+           right: 60px;
+           border: 2px solid var(--primary);
+           color: var(--primary);
+           font-size: 20px;
+       }
+
+       /* Stats Section */
+       .stats-section {
+           display: flex;
+           justify-content: center;
+           gap: 2rem;
+           padding: 4rem 5%;
+           flex-wrap: wrap;
+           background: var(--white);
+       }
+
+       .stat-card {
+           background: var(--white);
+           padding: 2rem;
+           border-radius: 16px;
+           box-shadow: 0 8px 24px rgba(30, 136, 229, 0.1);
+           display: flex;
+           align-items: center;
+           gap: 1.5rem;
+           min-width: 250px;
+           transition: all 0.3s ease;
+       }
+
+       .stat-card:hover {
+           transform: translateY(-5px);
+           box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15);
+       }
+
+       .stat-icon {
+           width: 60px;
+           height: 60px;
+           background: rgba(30, 136, 229, 0.1);
+           border-radius: 12px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           color: var(--primary);
+           font-size: 24px;
+       }
+
+       /* Process Section */
+       .process-section {
+           padding: 6rem 5%;
+           background: linear-gradient(135deg, var(--white) 0%, var(--gray-100) 100%);
+       }
+
+       .section-header {
+           text-align: center;
+           margin-bottom: 4rem;
+       }
+
+       .section-header h2 {
+           color: var(--text-primary);
+           font-size: 2.5rem;
+           margin-bottom: 1rem;
+       }
+
+       .process-flow {
+           display: flex;
+           justify-content: space-between;
+           margin: 0 auto;
+           max-width: 1200px;
+           position: relative;
+       }
+
+       .process-step {
+           flex: 1;
+           text-align: center;
+           padding: 2rem;
+           background: var(--white);
+           border-radius: 16px;
+           box-shadow: 0 8px 24px rgba(30, 136, 229, 0.1);
+           margin: 0 1rem;
+           transition: all 0.3s ease;
+       }
+
+       .process-step:hover {
+           transform: translateY(-5px);
+           box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15);
+       }
+
+       .step-number {
+           width: 50px;
+           height: 50px;
+           background: var(--primary);
+           color: var(--white);
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           margin: 0 auto 1.5rem;
+           font-size: 1.2rem;
+           font-weight: 600;
+           box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2);
+       }
+
+       /* Responsive Design */
+       @media (max-width: 768px) {
+           .hero {
+               flex-direction: column;
+               text-align: center;
+               padding: 4rem 5%;
+           }
+
+           .cta-buttons {
+               justify-content: center;
+           }
+
+           .nav-links {
+               display: none;
+           }
+
+           .process-flow {
+               flex-direction: column;
+               gap: 2rem;
+           }
+
+           .process-step {
+               margin: 1rem 0;
+           }
+
+           h1 {
+               font-size: 2.5rem;
+           }
+       }
+
+       @media (max-width: 480px) {
+           .stat-card {
+               min-width: 100%;
+           }
+
+           .cta-buttons {
+               flex-direction: column;
+           }
+
+           .primary-btn, .secondary-btn {
+               width: 100%;
+               justify-content: center;
+           }
+       }
+       .benefits-section {
+           padding: 6rem 5%;
+           background: linear-gradient(135deg, var(--gray-100) 0%, var(--white) 100%);
+       }
+
+       .benefits-grid {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+           gap: 2rem;
+           max-width: 1200px;
+           margin: 0 auto 3rem auto;
+       }
+
+       .benefit-card {
+           background: var(--white);
+           padding: 2.5rem;
+           border-radius: 16px;
+           box-shadow: 0 8px 24px rgba(30, 136, 229, 0.1);
+           transition: all 0.3s ease;
+       }
+
+       .benefit-card:hover {
+           transform: translateY(-5px);
+           box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15);
+       }
+
+       .benefit-icon {
+           width: 64px;
+           height: 64px;
+           background: rgba(30, 136, 229, 0.1);
+           border-radius: 12px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           font-size: 28px;
+           color: var(--primary);
+           margin-bottom: 1.5rem;
+       }
+
+       .benefit-card h3 {
+           color: var(--text-primary);
+           font-size: 1.5rem;
+           margin-bottom: 1rem;
+       }
+
+       .benefit-card p {
+           color: var(--text-primary);
+           opacity: 0.8;
+           line-height: 1.6;
+       }
+
+       /* CTA Section */
+       .cta-section {
+           background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+           color: var(--white);
+           padding: 6rem 5%;
+           text-align: center;
+       }
+
+       .cta-section h2 {
+           font-size: 2.5rem;
+           margin-bottom: 1.5rem;
+       }
+
+       .cta-section p {
+           font-size: 1.2rem;
+           opacity: 0.9;
+           margin-bottom: 3rem;
+           max-width: 600px;
+           margin-left: auto;
+           margin-right: auto;
+       }
+
+       .cta-stats {
+           display: flex;
+           justify-content: center;
+           gap: 3rem;
+           margin: 3rem 0;
+           flex-wrap: wrap;
+       }
+
+       .cta-stat {
+           background: rgba(255, 255, 255, 0.1);
+           padding: 2rem;
+           border-radius: 12px;
+           min-width: 200px;
+           backdrop-filter: blur(10px);
+           border: 1px solid rgba(255, 255, 255, 0.2);
+           transition: all 0.3s ease;
+       }
+
+       .cta-stat:hover {
+           transform: translateY(-5px);
+           background: rgba(255, 255, 255, 0.15);
+       }
+
+       .cta-stat h3 {
+           font-size: 2rem;
+           margin-bottom: 0.5rem;
+       }
+
+       .cta-stat p {
+           font-size: 1rem;
+           opacity: 0.9;
+           margin: 0;
+       }
+
+       .button {
+           display: inline-block;
+           padding: 1rem 2rem;
+           border-radius: 8px;
+           text-decoration: none;
+           font-weight: 500;
+           transition: all 0.3s ease;
+       }
+
+       .button-primary {
+           background: var(--white);
+           color: var(--primary);
+           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+       }
+
+       .button-primary:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+       }
+
+       .button-secondary {
+           background: transparent;
+           color: var(--white);
+           border: 2px solid var(--white);
+           margin-left: 1rem;
+       }
+
+       .button-secondary:hover {
+           background: rgba(255, 255, 255, 0.1);
+           transform: translateY(-2px);
+       }
+
+       /* Footer */
+       .footer {
+           background: var(--text-primary);
+           color: var(--white);
+           padding: 6rem 5% 2rem;
+       }
+
+       .footer-content {
+           max-width: 1200px;
+           margin: 0 auto;
+           display: grid;
+           grid-template-columns: 2fr 1fr 1fr 1fr;
+           gap: 4rem;
+           margin-bottom: 3rem;
+       }
+
+       .footer-brand {
+           max-width: 400px;
+       }
+
+       .footer-brand h2 {
+           font-size: 1.8rem;
+           margin-bottom: 1.5rem;
+           color: var(--white);
+           background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+       }
+
+       .footer-brand p {
+           color: rgba(255, 255, 255, 0.8);
+           line-height: 1.8;
+           margin-bottom: 2rem;
+       }
+
+       .explore-btn {
+           display: inline-flex;
+           align-items: center;
+           gap: 0.5rem;
+           padding: 0.75rem 1.5rem;
+           background: rgba(255, 255, 255, 0.1);
+           color: var(--white);
+           text-decoration: none;
+           border-radius: 8px;
+           transition: all 0.3s ease;
+       }
+
+       .explore-btn:hover {
+           background: rgba(255, 255, 255, 0.15);
+           transform: translateX(5px);
+       }
+
+       .footer-column h3 {
+           color: var(--white);
+           font-size: 1.2rem;
+           margin-bottom: 1.5rem;
+           position: relative;
+       }
+
+       .footer-column h3::after {
+           content: '';
+           position: absolute;
+           bottom: -0.5rem;
+           left: 0;
+           width: 30px;
+           height: 2px;
+           background: var(--primary);
+       }
+
+       .footer-column ul {
+           list-style: none;
+       }
+
+       .footer-column ul li {
+           margin-bottom: 1rem;
+       }
+
+       .footer-column ul li a {
+           color: rgba(255, 255, 255, 0.8);
+           text-decoration: none;
+           transition: all 0.3s ease;
+           display: inline-flex;
+           align-items: center;
+           gap: 0.5rem;
+       }
+
+       .footer-column ul li a:hover {
+           color: var(--white);
+           transform: translateX(5px);
+       }
+
+       .footer-bottom {
+           text-align: center;
+           padding-top: 2rem;
+           border-top: 1px solid rgba(255, 255, 255, 0.1);
+           color: rgba(255, 255, 255, 0.6);
+           font-size: 0.9rem;
+       }
+
+       @media (max-width: 1024px) {
+           .footer-content {
+               grid-template-columns: 1fr 1fr;
+               gap: 3rem;
+           }
+
+           .footer-brand {
+               grid-column: 1 / -1;
+               text-align: center;
+               max-width: 600px;
+               margin: 0 auto;
+           }
+
+           .footer-column h3::after {
+               left: 50%;
+               transform: translateX(-50%);
+           }
+       }
+
+       @media (max-width: 768px) {
+           .cta-stats {
+               gap: 1.5rem;
+           }
+
+           .cta-stat {
+               min-width: 150px;
+           }
+
+           .footer-content {
+               grid-template-columns: 1fr;
+               text-align: center;
+           }
+
+           .footer-column ul li a {
+               justify-content: center;
+           }
+       }
+
+       @keyframes floatAnimation {
+           0%, 100% { transform: translateY(0); }
+           50% { transform: translateY(-15px); }
+       }
+
+       @keyframes float {
+           0%, 100% { transform: translateY(0); }
+           50% { transform: translateY(-10px); }
+       }
+   </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo"></div>
+            <span class="logo-text">MedTrace</span>
+        </div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <a href="{{ url_for('login') }}" class="get-started-btn">Get Started</a>
+    </nav>
+
+    <main class="hero">
+        <div class="hero-content">
+            <div class="tag">
+                <div class="tag-icon"></div>
+                <span>Next-Gen Supply Chain Platform</span>
+            </div>
+            <h1>Secure Pharmaceutical Supply Chain Management Platform</h1>
+            <p class="subtitle">Revolutionizing pharmaceutical tracking with blockchain technology, ensuring authenticity and safety at every step of the supply chain.</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('login') }}" class="primary-btn">Get Started →</a>
+                <a href="#" class="secondary-btn">Learn More ℹ️</a>
+            </div>
+        </div>
+        
+        <div class="hero-image">
+            <div class="circle-container">
+                <div class="main-circle"></div>
+                <div class="floating-dot dot1"></div>
+                <div class="floating-dot dot2"></div>
+                
+                <div class="node plus-node">+</div>
+                <div class="node arrow-node">→</div>
+                <div class="node grid-node">⊞</div>
+                
+                <div class="curve-path">
+                    <div class="curve-container">
+                        <svg>
+                            <path d="M 80 1 Q 200 1, 320 1" />
+                        </svg>
+                        <div class="moving-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+    <section class="stats-section">
+        <div class="stat-card">
+            <div class="stat-icon">🛡️</div>
+            <div>
+                <h3>100%</h3>
+                <p>Secure</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div>
+                <h3>99.9%</h3>
+                <p>Accuracy</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div>
+                <h3>1000+</h3>
+                <p>Users</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="process-section">
+        <div class="section-header">
+            <h2>How MedTrace Works</h2>
+            <p>Simple and secure end-to-end supply chain tracking</p>
+        </div>
+        <div class="process-flow">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h3>Manufacturing</h3>
+                <p>Products are registered on the blockchain</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h3>Distribution</h3>
+                <p>Real-time tracking and verification</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h3>Pharmacy</h3>
+                <p>Verify authenticity before dispensing</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h3>Verification</h3>
+                <p>End-to-end traceability ensured</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits-section">
+        <div class="section-header">
+            <h2>Why Choose MedTrace?</h2>
+            <p>Comprehensive solutions for modern pharmaceutical supply chain challenges</p>
+        </div>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">🛡️</div>
+                <h3>Enhanced Security</h3>
+                <p>Military-grade encryption and blockchain technology ensure tamper-proof records.</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">📊</div>
+                <h3>Real-time Tracking</h3>
+                <p>Monitor your supply chain in real-time with instant updates and notifications.</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">📈</div>
+                <h3>Advanced Analytics</h3>
+                <p>Gain valuable insights with AI-powered analytics and predictive modeling.</p>
+            </div>
+        </div>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">🛡️</div>
+                <h3>Enhanced Security</h3>
+                <p>Military-grade encryption and blockchain technology ensure tamper-proof records.</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">📊</div>
+                <h3>Real-time Tracking</h3>
+                <p>Monitor your supply chain in real-time with instant updates and notifications.</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">📈</div>
+                <h3>Advanced Analytics</h3>
+                <p>Gain valuable insights with AI-powered analytics and predictive modeling.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Ready to Transform Your Supply Chain?</h2>
+        <p>Join thousands of pharmaceutical companies already using MedTrace</p>
+        <div class="cta-stats">
+            <div class="cta-stat">
+                <h3>100K+</h3>
+                <p>Products Tracked</p>
+            </div>
+            <div class="cta-stat">
+                <h3>99.9%</h3>
+                <p>Accuracy Rate</p>
+            </div>
+            <div class="cta-stat">
+                <h3>24/7</h3>
+                <p>Support</p>
+            </div>
+        </div>
+        <div class="cta-buttons">
+            <a href="{{ url_for('login') }}" class="button button-primary">Get Started Now →</a>
+            <a href="#" class="button button-secondary">Contact Sales</a>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>MedTrace</h2>
+                <p>Revolutionizing pharmaceutical supply chains with cutting-edge blockchain technology and real-time tracking solutions.</p>
+                <a href="#" class="explore-btn">Explore →</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Solutions</h3>
+                <ul>
+                    <li><a href="#manufacturers">For Manufacturers</a></li>
+                    <li><a href="#distributors">For Distributors</a></li>
+                    <li><a href="#pharmacies">For Pharmacies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#documentation">Documentation</a></li>
+                    <li><a href="#support">Support</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2024 MedTrace. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

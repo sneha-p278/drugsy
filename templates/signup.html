@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrace - Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: #f8f9fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 1.25rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            box-shadow: 0 4px 6px rgba(42, 57, 144, 0.1);
+        }
+
+        .back-button {
+            text-decoration: none;
+            color: #2a3990;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #1a237e;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2a3990;
+            letter-spacing: -0.5px;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2.5rem 0;
+            padding: 0 2rem;
+        }
+
+        .progress-dot {
+            width: 60px;
+            height: 6px;
+            background: #e8eaf6;
+            border-radius: 8px;
+            transition: all 0.4s ease;
+        }
+
+        .progress-dot.active {
+            background: #2a3990;
+            transform: scaleX(1.1);
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2a3990;
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .option-button {
+            width: 100%;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border: 2px solid #e8eaf6;
+            border-radius: 12px;
+            background: white;
+            font-size: 1.1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #2a3990;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .option-button:hover {
+            background: #f5f7ff;
+            border-color: #2a3990;
+            transform: translateY(-2px);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+            border: 2px solid #e8eaf6;
+            border-radius: 10px;
+            background: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            color: #2a3990;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2a3990;
+            box-shadow: 0 0 0 4px rgba(42, 57, 144, 0.1);
+        }
+
+        .verify-button {
+            background: #2a3990;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .verify-button:hover {
+            background: #1a237e;
+            transform: translateY(-1px);
+        }
+
+        .otp-container {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.4rem;
+            border: 2px solid #e8eaf6;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #2a3990;
+            font-weight: 600;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #2a3990;
+            box-shadow: 0 0 0 4px rgba(42, 57, 144, 0.1);
+        }
+
+        .next-button {
+            display: block;
+            width: 120px;
+            padding: 1rem;
+            margin: 2.5rem auto 0;
+            background: #2a3990;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .next-button:hover {
+            background: #1a237e;
+            transform: translateY(-2px);
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="javascript:void(0);" class="back-button" onclick="window.history.back();">← Back</a>
+        <div class="logo">MedTrace</div>
+        <div style="width: 50px"></div>
+    </header>
+
+    <div class="progress-container">
+        <div class="progress-dot active"></div>
+        <div class="progress-dot"></div>
+    </div>
+
+    <main class="container">
+        <div class="screen active" id="screen1">
+            <h1>What type of Application are you looking for?</h1>
+            <button class="option-button" id="Manufacture">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2a3990" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+                Drug Manufacturer
+            </button>
+            <button class="option-button" id="Distributor">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2a3990" stroke-width="2">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                Distributor
+            </button>
+            <button class="option-button" id="large">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2a3990" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Large-scale Pharmacy
+            </button>
+            <button class="option-button" id="Small">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2a3990" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                Small-scale Pharmacy
+            </button>
+        </div>
+
+        <div class="screen" id="screen2">
+            <h1>Complete Manufacturer Onboarding</h1>
+            <input type="text" class="input-field" placeholder="Company Name">
+            <input type="text" class="input-field" placeholder="Address">
+            <input type="text" class="input-field" placeholder="Registration Number">
+            <input type="text" class="input-field" placeholder="GST Number">
+            <input type="text" class="input-field" placeholder="Drug License Number">
+            <input type="text" class="input-field" placeholder="Pharmaceutical Manufacture License">
+            <input type="email" class="input-field" placeholder="Email">
+            <button class="verify-button" onclick="sendOTP()">Verify Email</button>
+            
+            <div id="otpSection" class="hidden">
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                </div>
+                <button class="verify-button" onclick="verifyOTP()">Verify OTP</button>
+            </div>
+
+            <div id="passwordSection" class="hidden">
+                <input type="password" class="input-field" placeholder="Enter Password" id="password">
+                <input type="password" class="input-field" placeholder="Confirm Password" id="confirmPassword">
+            </div>
+            
+            <button class="next-button">Next →</button>
+        </div>
+        <div class="screen" id="screen3">
+            <h1>Complete Distributor Onboarding</h1>
+            <input type="text" class="input-field" placeholder="Distributor Name">
+            <input type="text" class="input-field" placeholder="Address">
+            <input type="text" class="input-field" placeholder="Registration Number">
+            <input type="text" class="input-field" placeholder="GST Number">
+            <input type="text" class="input-field" placeholder="Drug License Number">
+            <input type="text" class="input-field" placeholder="Pharmaceutical Distribution License">
+            <input type="email" class="input-field" placeholder="Email">
+            <button class="verify-button" onclick="sendOTP()">Verify Email</button>
+            
+            <div id="otpSection" class="hidden">
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                </div>
+                <button class="verify-button" onclick="verifyOTP()">Verify OTP</button>
+            </div>
+
+            <div id="passwordSection" class="hidden">
+                <input type="password" class="input-field" placeholder="Enter Password" id="password">
+                <input type="password" class="input-field" placeholder="Confirm Password" id="confirmPassword">
+            </div>
+            
+            <button class="next-button">Next</button>
+        </div>
+
+        <div class="screen" id="screen4">
+            <h1>Complete Large-scale Pharmacy Onboarding</h1>
+            <input type="text" class="input-field" placeholder="Pharmacy Name">
+            <input type="text" class="input-field" placeholder="Address">
+            <input type="text" class="input-field" placeholder="Registration Number">
+            <input type="text" class="input-field" placeholder="GST Number">
+            <input type="text" class="input-field" placeholder="Drug License Number">
+            <input type="text" class="input-field" placeholder="Pharmaceutical Pharmacy License">
+            <input type="email" class="input-field" placeholder="Email">
+            <button class="verify-button" onclick="sendOTP()">Verify Email</button>
+            
+            <div id="otpSection" class="hidden">
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                </div>
+                <button class="verify-button" onclick="verifyOTP()">Verify OTP</button>
+            </div>
+
+            <div id="passwordSection" class="hidden">
+                <input type="password" class="input-field" placeholder="Enter Password" id="password">
+                <input type="password" class="input-field" placeholder="Confirm Password" id="confirmPassword">
+            </div>
+            
+            <button class="next-button">Next</button>
+        </div>
+
+        <div class="screen" id="screen5">
+            <h1>Complete Small-scale Pharmacy Onboarding</h1>
+            <input type="text" class="input-field" placeholder="Pharmacy Name">
+            <input type="text" class="input-field" placeholder="Address">
+            <input type="text" class="input-field" placeholder="Registration Number">
+            <input type="text" class="input-field" placeholder="GST Number">
+            <input type="text" class="input-field" placeholder="Drug License Number">
+            <input type="text" class="input-field" placeholder="Pharmaceutical Pharmacy License">
+            <input type="email" class="input-field" placeholder="Email">
+            <button class="verify-button" onclick="sendOTP()">Verify Email</button>
+            
+            <div id="otpSection" class="hidden">
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                    <input type="text" class="otp-input" maxlength="1" />
+                </div>
+                <button class="verify-button" onclick="verifyOTP()">Verify OTP</button>
+            </div>
+
+            <div id="passwordSection" class="hidden">
+                <input type="password" class="input-field" placeholder="Enter Password" id="password">
+                <input type="password" class="input-field" placeholder="Confirm Password" id="confirmPassword">
+            </div>
+            
+            <button class="next-button">Next</button>
+        </div>
+    </main>
+
+    <script>
+ document.addEventListener('DOMContentLoaded', function() {
+    const screen1 = document.getElementById('screen1');
+    const screen2 = document.getElementById('screen2');
+    const screen3 = document.getElementById('screen3');
+    const screen4 = document.getElementById('screen4');
+    const screen5 = document.getElementById('screen5');
+
+    const screens = Array.from(document.querySelectorAll('.screen'));
+    const progressDots = document.querySelectorAll('.progress-dot');
+    const optionButtons = document.querySelectorAll('.option-button');
+    let currentScreen = 0;
+
+    function updateProgress() {
+        progressDots.forEach((dot, index) => {
+            dot.classList.toggle('active', index <= currentScreen);
+        });
+    }
+
+    function showScreen(index) {
+        screens.forEach((screen, i) => {
+            screen.classList.toggle('active', i === index);
+        });
+        currentScreen = index;
+        updateProgress();
+    }
+
+    // Handle option button clicks and navigation
+    optionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Reset all buttons to white background
+            optionButtons.forEach(btn => btn.style.background = 'white');
+            // Set clicked button background to light gray
+            button.style.background = '#f0f0f0';
+
+            // Navigate based on button ID
+            switch(button.id) {
+                case 'Manufacture':
+                    showScreen(1); // Navigate to screen2
+                    break;
+                case 'Distributor':
+                    showScreen(2); // Navigate to screen3
+                    break;
+                case 'large':
+                    showScreen(3); // Navigate to screen4
+                    break;
+                case 'Small':
+                    showScreen(4); // Navigate to screen5
+                    break;
+            }
+        });
+    });
+
+    // Back button functionality
+    document.querySelector('.back-button').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentScreen > 0) {
+            showScreen(0); // Always go back to screen1
+        }
+    });
+});
+
+
+function sendOTP() {
+    const emailInput = document.querySelector('input[type="email"]');
+    if (emailInput.value) {
+        document.getElementById('otpSection').classList.remove('hidden');
+        alert('OTP sent to your email (Demo OTP: 123456)');
+    } else {
+        alert('Please enter a valid email address');
+    }
+}
+
+function verifyOTP() {
+    const otpInputs = document.querySelectorAll('.otp-input');
+    let enteredOTP = '';
+    otpInputs.forEach(input => {
+        enteredOTP += input.value;
+    });
+
+    if (enteredOTP === '123456') {
+        document.getElementById('passwordSection').classList.remove('hidden');
+        alert('OTP verified successfully! Please set your password.');
+    } else {
+        alert('Invalid OTP. Please try again.');
+    }
+}
+
+// Add event listeners for OTP inputs
+const otpInputs = document.querySelectorAll('.otp-input');
+otpInputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+        }
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            otpInputs[index - 1].focus();
+        }
+    });
+});    
+    </script>
+</body>
+</html>
